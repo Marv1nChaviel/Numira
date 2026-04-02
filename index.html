@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./assets/icon.svg" />
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
@@ -284,6 +287,7 @@
         <div class="stats-tabs">
           <button class="stats-tab active" id="stab-charts" onclick="UI.switchStatsTab('charts')">📊 Gráficas</button>
           <button class="stats-tab" id="stab-budgets" onclick="UI.switchStatsTab('budgets')">💰 Presupuestos</button>
+          <button class="stats-tab" id="stab-subs" onclick="UI.switchStatsTab('subs')">📆 Suscripciones</button>
         </div>
 
         <!-- ─── TAB: GRÁFICAS ─── -->
@@ -316,6 +320,16 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Nuevo presupuesto
           </button>
+        </div>
+
+        <!-- ─── TAB: SUSCRIPCIONES ─── -->
+        <div id="stats-tab-subs" class="hidden">
+          <div class="balance-card glass-deep" style="min-height:auto; padding:30px; margin-bottom:24px; text-align:center;">
+            <p class="balance-label">Gastos fijos asignados</p>
+            <h2 class="balance-amount" id="subs-total" style="font-size:36px;">$0.00</h2>
+            <p class="balance-period" style="margin-top:4px;">Comprometido este mes</p>
+          </div>
+          <div id="subs-list" style="display:flex; flex-direction:column; gap:12px;"></div>
         </div>
 
       </div>

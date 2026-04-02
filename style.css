@@ -1405,3 +1405,104 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
   margin-left: 8px;
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
+
+/* ════════════════════════════════════════════════════
+   DESKTOP RESPONSIVE LAYOUT (PC INTERFACE)
+   ════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    justify-content: center;
+    background-size: cover;
+  }
+  
+  .app {
+    width: 100%;
+    max-width: 1300px;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .sidebar-brand { display: flex !important; }
+  .sidebar-brand-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
+    margin-left: 10px;
+  }
+  [data-theme="light"] .sidebar-brand-name { color: var(--text-primary); }
+
+  .bottom-nav {
+    position: relative;
+    width: 250px;
+    height: 100vh;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 40px 24px;
+    border-radius: 0;
+    border-top: none;
+    border-right: 1px solid var(--glass-border);
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .nav-item {
+    flex: none;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 14px 20px;
+    justify-content: flex-start;
+    border-radius: var(--radius-md);
+  }
+
+  .nav-label {
+    display: block !important;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-left: 16px;
+  }
+
+  .nav-item.active { background: rgba(139, 92, 246, 0.15); color: var(--color-accent); }
+  [data-theme="light"] .nav-item.active { background: rgba(139, 92, 246, 0.08); }
+
+  .nav-add {
+    transform: none !important;
+    position: static;
+    margin-top: 30px;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: var(--radius-md);
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .nav-add .nav-add-icon { background: transparent; box-shadow: none; width: auto; height: auto; }
+  .nav-add::after { content: 'Nueva Transacción'; font-weight: 600; margin-left: 10px; font-size: 15px; }
+
+  .page { position: relative; flex: 1; overflow-y: auto; padding: 40px 60px; padding-bottom: 80px; }
+  .page-scroll { max-width: 900px; margin: 0 auto; padding: 0; }
+
+  .summary-row { flex-direction: row; flex-wrap: nowrap; gap: 24px; }
+  .summary-card { flex: 1; }
+
+  .balance-card { min-height: 240px; padding: 40px; border-radius: var(--radius-xl); }
+  .balance-amount { font-size: 54px; }
+  .balance-sparkle { right: 40px; top: 40px; }
+
+  .stats-tabs { max-width: 500px; margin-bottom: 30px; }
+  .modal { width: 480px !important; margin: auto; }
+  
+  .transactions-list, .goals-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
+  .tx-item { margin-bottom: 0; }
+}

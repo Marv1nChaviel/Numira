@@ -451,12 +451,53 @@ const UI = {
   },
 
   switchStatsTab(tab) {
-    const isCharts=tab==='charts';
+    const isCharts=tab==='charts', isBud=tab==='budgets', isSubs=tab==='subs';
     document.getElementById('stats-tab-charts').classList.toggle('hidden',!isCharts);
-    document.getElementById('stats-tab-budgets').classList.toggle('hidden',isCharts);
+    document.getElementById('stats-tab-budgets').classList.toggle('hidden',!isBud);
+    document.getElementById('stats-tab-subs').classList.toggle('hidden',!isSubs);
     document.getElementById('stab-charts').classList.toggle('active',isCharts);
-    document.getElementById('stab-budgets').classList.toggle('active',!isCharts);
-    if (!isCharts) this.renderBudgets();
+    document.getElementById('stab-budgets').classList.toggle('active',isBud);
+    document.getElementById('stab-subs').classList.toggle('active',isSubs);
+    if (isBud) this.renderBudgets();
+    if (isSubs) this.renderSubscriptions();
+  },
+
+  async renderSubscriptions() {
+    const list=document.getElementById('subs-list');
+    list.innerHTML=`<div class="skeleton-list"><div class="skeleton-item"><div class="skeleton-circle"></div><div class="skeleton-lines"><div class="skeleton-line w70"></div><div class="skeleton-line w40"></div></div></div></div>`;
+    
+    const user=await Auth.getUser(); if (!user) return;
+    const currency=this.getCurrencySymbol((user.user_metadata||{}).currency||'USD');
+    const { data: txs, error } = await window.supabase.from('transactions').select('*').eq('user_id', user.id).eq('type', 'expense').eq('recurring', true).order('date', { ascending: false });
+    
+    if (error || !txs || !txs.length) {
+      document.getElementById('subs-total').textContent = this.formatMoney(0, currency);
+      list.innerHTML = `<div class="empty-state glass" style="padding:24px"><span class="empty-icon">📅</span><p>Sin suscripciones activas</p><small>Añade gastos recurrentes para verlos aquí</small></div>`;
+      return;
+    }
+    
+    // Agrupar únicas por descripción
+    const uniqueMap = {};
+    txs.forEach(t => {
+      const lower = (t.description||'').trim().toLowerCase();
+      if (!uniqueMap[lower]) uniqueMap[lower] = t;
+    });
+    const uniqueSubs = Object.values(uniqueMap);
+    const total = uniqueSubs.reduce((acc, t) => acc + Number(t.amount), 0);
+    
+    document.getElementById('subs-total').textContent = this.formatMoney(total, currency);
+    
+    list.innerHTML = uniqueSubs.map(tx => {
+      const cat = CATEGORIES.find(c => c.id === tx.category) || CATEGORIES.at(-1);
+      return `<div class="tx-item glass" onclick="UI.openEditModal('${tx.id}')">
+        <div class="tx-emoji">${cat.emoji}</div>
+        <div class="tx-info">
+          <div class="tx-desc">${this.escapeHtml(tx.description)} <span class="recurring-badge">🔄 Suscripción</span></div>
+          <div class="tx-meta"><span>${cat.label}</span></div>
+        </div>
+        <div class="tx-amount expense">-${this.formatMoney(Number(tx.amount), currency)}</div>
+      </div>`;
+    }).join('');
   },
 
   async renderBudgets() {
@@ -687,6 +728,12 @@ const Charts = {
 // ── SKELETON CSS ──────────────────────────────────────
 (()=>{ const s=document.createElement('style'); s.textContent=`.skeleton-list{display:flex;flex-direction:column;gap:10px}.skeleton-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05)}.skeleton-circle{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.08);flex-shrink:0;animation:shimmer 1.4s infinite}.skeleton-lines{flex:1;display:flex;flex-direction:column;gap:8px}.skeleton-line{height:10px;border-radius:999px;background:rgba(255,255,255,.08);animation:shimmer 1.4s infinite}.skeleton-line.w70{width:70%}.skeleton-line.w40{width:40%}.skeleton-line.w20{width:20%}@keyframes shimmer{0%,100%{opacity:.5}50%{opacity:1}}`; document.head.appendChild(s); })();
 
+// ── PWA SERVICE WORKER ────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('PWA no disponible en desarrollo', err));
+  });
+}
 // ── KEYBOARD + SWIPE ──────────────────────────────────
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&UI._modalOpen) UI._hideModal(UI._modalOpen); });
 (()=>{ let sY=0,sX=0; document.addEventListener('touchstart',e=>{sY=e.touches[0].clientY;sX=e.touches[0].clientX;},{passive:true}); document.addEventListener('touchend',e=>{ const dY=e.changedTouches[0].clientY-sY,dX=Math.abs(e.changedTouches[0].clientX-sX); if(UI._modalOpen&&dY>80&&dX<60)UI._hideModal(UI._modalOpen); },{passive:true}); })();
