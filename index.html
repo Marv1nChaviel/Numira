@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,7 +21,7 @@
   <!-- ══════════════════════════════
        AUTH SCREEN
   ══════════════════════════════ -->
-  <div id="auth-screen" class="auth-screen hidden">
+  <div id="auth-screen" class="auth-screen">
     <div class="auth-bg-orb orb-1"></div>
     <div class="auth-bg-orb orb-2"></div>
     <div class="auth-bg-orb orb-3"></div>
@@ -52,12 +55,12 @@
       <div id="panel-login" class="auth-panel" role="tabpanel">
         <form id="form-login" onsubmit="Auth.login(event)">
           <div class="field-group">
-            <label class="field-label" for="login-username">Usuario</label>
+            <label class="field-label" for="login-email">Email</label>
             <div class="field-wrapper">
               <span class="field-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               </span>
-              <input id="login-username" class="field-input" type="text" placeholder="tu_usuario" autocomplete="username" required />
+              <input id="login-email" class="field-input" type="email" placeholder="tu@email.com" autocomplete="email" required />
             </div>
           </div>
           <div class="field-group">
@@ -93,12 +96,12 @@
             </div>
           </div>
           <div class="field-group">
-            <label class="field-label" for="reg-username">Nombre de usuario</label>
+            <label class="field-label" for="reg-email">Email</label>
             <div class="field-wrapper">
               <span class="field-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               </span>
-              <input id="reg-username" class="field-input" type="text" placeholder="juanperez" autocomplete="username" required />
+              <input id="reg-email" class="field-input" type="email" placeholder="tu@email.com" autocomplete="email" required />
             </div>
           </div>
           <div class="field-group">
@@ -365,6 +368,18 @@
 
     <!-- ─── BOTTOM NAVIGATION ─── -->
     <nav id="bottom-nav" class="bottom-nav glass-nav" role="navigation" aria-label="Navegación principal">
+
+      <!-- Desktop sidebar brand (hidden on mobile) -->
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">
+          <svg width="20" height="20" viewBox="0 0 36 36" fill="none">
+            <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" fill="rgba(139,92,246,0.4)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+            <path d="M18 10v16" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="sidebar-brand-name">Numira</span>
+      </div>
+
       <button class="nav-item active" id="nav-dashboard" onclick="UI.navigate('dashboard')" aria-label="Inicio">
         <span class="nav-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>

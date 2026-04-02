@@ -183,7 +183,7 @@ body::after {
   margin: 0 auto 14px;
   box-shadow: 0 0 30px rgba(139,92,246,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
 }
-.auth-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff 0%, rgba(167,139,250,0.9) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.auth-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff 0%, rgba(167,139,250,0.9) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .auth-tagline { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
 /* Auth Tabs */
@@ -426,7 +426,7 @@ body::after {
   font-size: 44px; font-weight: 800; letter-spacing: -2px;
   line-height: 1; margin-bottom: 6px;
   background: linear-gradient(135deg, #fff 0%, rgba(216,180,254,0.9) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
 .balance-period { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }
 .balance-sparkle {
@@ -839,17 +839,183 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
 .toast.info { border-color: rgba(167,139,250,0.4) !important; background: rgba(30,15,60,0.85) !important; color: var(--color-accent); }
 
 /* ════════════════════════════════════════════════════
-   RESPONSIVE DESKTOP
+   RESPONSIVE DESKTOP — SIDEBAR LAYOUT
    ════════════════════════════════════════════════════ */
-@media (min-width: 600px) {
-  .app, .bottom-nav {
-    max-width: 420px;
-    left: 50% !important; right: auto !important;
-    transform: translateX(-50%);
+
+/* ── Sidebar brand: hidden on mobile ── */
+.sidebar-brand { display: none; }
+
+@media (min-width: 768px) {
+
+  /* ── Full-width app ── */
+  .app {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    left: 0; right: 0;
+    transform: none;
+    border: none;
+    box-shadow: none;
   }
-  .bottom-nav { width: 420px; }
-  .modal, .modal-backdrop { max-width: 420px; left: 50%; right: auto; transform: translateX(-50%); }
-  .modal-backdrop { max-width: 100%; left: 0; right: 0; transform: none; }
-  .toast { top: 24px; }
-  #auth-screen .auth-container { max-width: 400px; border-radius: var(--radius-xl); }
+
+  /* ── Status bar: not needed on desktop ── */
+  .status-bar-spacer { display: none; }
+
+  /* ── Pages — offset by sidebar ── */
+  .page {
+    position: fixed;
+    top: 0; bottom: 0;
+    left: 240px; right: 0;
+  }
+
+  /* ── Sidebar navigation ── */
+  .bottom-nav {
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: auto;
+    width: 240px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0 12px 20px;
+    border-radius: 0;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    border-top: none;
+    transform: none;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar brand ── */
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 28px 8px 22px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.5), rgba(99,40,220,0.8));
+    border: 1px solid rgba(167,139,250,0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 18px rgba(139,92,246,0.35);
+  }
+  .sidebar-brand-name {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, rgba(167,139,250,0.9) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Nav items as sidebar rows ── */
+  .nav-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 11px 14px;
+    gap: 12px;
+    border-radius: 12px;
+    width: 100%;
+    border: 1px solid transparent;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--text-secondary);
+  }
+  .nav-item.active {
+    background: rgba(139,92,246,0.18);
+    border-color: rgba(139,92,246,0.28);
+    color: #fff;
+  }
+
+  /* ── Remove mobile dot indicator ── */
+  .nav-item .nav-icon::after { display: none !important; }
+
+  .nav-label { font-size: 14px; font-weight: 600; }
+
+  /* ── Add button — bottom of sidebar ── */
+  .nav-add {
+    top: 0;
+    margin-top: auto;
+    order: 99;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  .nav-add .nav-add-icon {
+    width: 100%;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  /* ── Modals — centered in content area as dialog ── */
+  .modal {
+    bottom: auto;
+    top: 50%;
+    left: calc(240px + (100vw - 240px) / 2);
+    right: auto;
+    width: 520px;
+    max-height: 88vh;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-xl);
+    animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal.closing {
+    animation: modalFadeOut 0.25s ease forwards;
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: translate(-50%, -47%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+  }
+  @keyframes modalFadeOut {
+    from { opacity: 1; transform: translate(-50%, -50%); }
+    to   { opacity: 0; transform: translate(-50%, -47%); }
+  }
+
+  /* Modal handle: hidden on desktop (no swipe) */
+  .modal-handle { display: none; }
+
+  /* Backdrop stays full-screen */
+  .modal-backdrop { left: 0; right: 0; transform: none; max-width: 100%; }
+
+  /* Toast */
+  .toast { top: 24px; left: calc(240px + (100vw - 240px) / 2); }
+
+  /* Auth */
+  .auth-screen { align-items: center; }
+  .auth-container {
+    max-width: 420px;
+    border-radius: var(--radius-xl) !important;
+    margin: 0 auto;
+  }
+
+  /* ── Page scroll — max content width ── */
+  .page-scroll {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 36px 40px;
+  }
+
+  /* ── Dashboard grid on desktop ── */
+  #page-dashboard .page-scroll {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 0 28px;
+    align-items: start;
+  }
+  /* Greeting spans full width */
+  #page-dashboard .page-header { grid-column: 1 / -1; }
+  /* Balance card spans full width */
+  #page-dashboard .balance-card { grid-column: 1 / -1; }
+  /* Summary row stays as row */
+  #page-dashboard .summary-row { grid-column: 1 / -1; }
+  /* Recent transactions: left column */
+  #page-dashboard .section-header { grid-column: 1; }
+  #page-dashboard #dash-recent { grid-column: 1; }
 }

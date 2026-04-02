@@ -1,0 +1,10 @@
+# Numira — Netlify config
+
+[build]
+  publish = "."
+
+# SPA redirect: cualquier ruta → index.html
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
