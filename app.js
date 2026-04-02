@@ -511,6 +511,7 @@ const UI = {
     document.getElementById('modal-title').textContent='Nueva transacción';
     document.getElementById('btn-save-label').textContent='Guardar';
     document.getElementById('recurring-toggle').setAttribute('aria-pressed','false');
+    document.getElementById('btn-repeat-tx').classList.add('hidden');
     this.setType('expense'); this.buildCategoryGrid();
     this._showModal('modal-transaction');
     setTimeout(()=>document.getElementById('tx-amount').focus(),300);
@@ -524,8 +525,14 @@ const UI = {
     document.getElementById('modal-title').textContent='Editar transacción';
     document.getElementById('btn-save-label').textContent='Actualizar';
     document.getElementById('recurring-toggle').setAttribute('aria-pressed',tx.recurring?'true':'false');
+    document.getElementById('btn-repeat-tx').classList.remove('hidden');
     this.setType(tx.type); this.selectedCategory=tx.category; this.buildCategoryGrid();
     this._showModal('modal-transaction');
+  },
+  repeatTransaction() {
+    document.getElementById('tx-edit-id').value='';
+    document.getElementById('tx-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('btn-save-tx').click(); // Re-saves as new!
   },
   toggleRecurring() {
     const btn=document.getElementById('recurring-toggle');

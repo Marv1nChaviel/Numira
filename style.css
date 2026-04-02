@@ -1334,3 +1334,74 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
   }
 }
 
+/* ════════════════════════════════════════════════════
+   THEMES & BADGES (Mejoras Adicionales)
+   ════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  --glass-bg: rgba(255, 255, 255, 0.70);
+  --glass-bg-deep: rgba(255, 255, 255, 0.50);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass-border-strong: rgba(0, 0, 0, 0.15);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --glass-inset: inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -1px 0 rgba(0,0,0,0.02);
+
+  --text-primary: #1e1b4b;
+  --text-secondary: #4338ca;
+  --text-muted: #6b7280;
+  --text-placeholder: #9ca3af;
+}
+
+[data-theme="light"] body {
+  background-color: #f8fafc;
+}
+
+[data-theme="light"] body::before {
+  opacity: 0.1;
+  filter: blur(4px);
+}
+
+[data-theme="light"] body::after {
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 70%, rgba(96, 165, 250, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 50% 10%, rgba(244, 114, 182, 0.3) 0%, transparent 70%),
+    linear-gradient(160deg, rgba(255,255,255,0.5) 0%, rgba(241,245,249,0.8) 100%);
+}
+
+.compare-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin-top: 4px;
+}
+.compare-badge.up {
+  color: var(--color-income);
+  background: var(--color-income-bg);
+  border: 1px solid var(--color-income-border);
+}
+.compare-badge.down {
+  color: var(--color-expense);
+  background: var(--color-expense-bg);
+  border: 1px solid var(--color-expense-border);
+}
+.compare-badge.flat {
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.recurring-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: rgba(139, 92, 246, 0.15);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}

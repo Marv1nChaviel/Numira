@@ -521,11 +521,15 @@
     <input type="hidden" id="tx-edit-id" />
 
     <!-- Actions -->
-    <div class="modal-actions">
+    <div class="modal-actions" style="flex-wrap: wrap;">
       <button class="btn-ghost" onclick="UI.closeModal()">Cancelar</button>
       <button class="btn-primary" id="btn-save-tx" onclick="Data.saveTransaction()">
         <span id="btn-save-label">Guardar</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <button class="btn-ghost hidden" id="btn-repeat-tx" onclick="UI.repeatTransaction()" style="flex-basis: 100%; margin-top: 4px; border-color: rgba(139,92,246,0.5); color: var(--color-accent);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:-3px"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Repetir este mes
       </button>
     </div>
   </div>
