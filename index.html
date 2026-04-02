@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0c1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="FinFlow — Controla tus ingresos y gastos con estilo. App de finanzas personales con diseño Liquid Glass." />
+  <title>FinFlow — Finanzas personales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════
+       AUTH SCREEN
+  ══════════════════════════════ -->
+  <div id="auth-screen" class="auth-screen hidden">
+    <div class="auth-bg-orb orb-1"></div>
+    <div class="auth-bg-orb orb-2"></div>
+    <div class="auth-bg-orb orb-3"></div>
+
+    <div class="auth-container glass-deep">
+      <!-- Logo -->
+      <div class="auth-logo">
+        <div class="auth-logo-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" fill="rgba(139,92,246,0.3)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+            <path d="M23 14h-8a1 1 0 000 2h8a1 1 0 000-2zM13 20a1 1 0 011-1h4a1 1 0 010 2h-4a1 1 0 01-1-1z" fill="rgba(255,255,255,0.9)"/>
+            <path d="M18 10v16" stroke="rgba(139,92,246,0.9)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="auth-logo-text">FinFlow</h1>
+        <p class="auth-tagline">Tus finanzas, bajo control</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs" role="tablist">
+        <button id="tab-login" class="auth-tab active" role="tab" aria-selected="true" aria-controls="panel-login" onclick="UI.switchAuthTab('login')">
+          Iniciar sesión
+        </button>
+        <button id="tab-register" class="auth-tab" role="tab" aria-selected="false" aria-controls="panel-register" onclick="UI.switchAuthTab('register')">
+          Registrarse
+        </button>
+        <div class="auth-tab-indicator"></div>
+      </div>
+
+      <!-- Login Panel -->
+      <div id="panel-login" class="auth-panel" role="tabpanel">
+        <form id="form-login" onsubmit="Auth.login(event)">
+          <div class="field-group">
+            <label class="field-label" for="login-username">Usuario</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              </span>
+              <input id="login-username" class="field-input" type="text" placeholder="tu_usuario" autocomplete="username" required />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="login-password">Contraseña</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </span>
+              <input id="login-password" class="field-input" type="password" placeholder="••••••••" autocomplete="current-password" required />
+              <button type="button" class="field-toggle" onclick="UI.togglePassword('login-password', this)" aria-label="Mostrar contraseña">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="login-error" class="auth-error hidden"></div>
+          <button id="btn-login" class="btn-primary" type="submit">
+            <span>Entrar</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Register Panel -->
+      <div id="panel-register" class="auth-panel hidden" role="tabpanel">
+        <form id="form-register" onsubmit="Auth.register(event)">
+          <div class="field-group">
+            <label class="field-label" for="reg-name">Nombre completo</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input id="reg-name" class="field-input" type="text" placeholder="Juan Pérez" autocomplete="name" required />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="reg-username">Nombre de usuario</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              </span>
+              <input id="reg-username" class="field-input" type="text" placeholder="juanperez" autocomplete="username" required />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="reg-currency">Moneda</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h4.5a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H15"/></svg>
+              </span>
+              <select id="reg-currency" class="field-input field-select">
+                <option value="USD">🇺🇸 USD — Dólar estadounidense</option>
+                <option value="EUR">🇪🇺 EUR — Euro</option>
+                <option value="VES">🇻🇪 VES — Bolívar venezolano</option>
+                <option value="MXN">🇲🇽 MXN — Peso mexicano</option>
+                <option value="COP">🇨🇴 COP — Peso colombiano</option>
+                <option value="ARS">🇦🇷 ARS — Peso argentino</option>
+                <option value="CLP">🇨🇱 CLP — Peso chileno</option>
+                <option value="PEN">🇵🇪 PEN — Sol peruano</option>
+                <option value="BRL">🇧🇷 BRL — Real brasileño</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="reg-password">Contraseña</label>
+            <div class="field-wrapper">
+              <span class="field-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </span>
+              <input id="reg-password" class="field-input" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required />
+              <button type="button" class="field-toggle" onclick="UI.togglePassword('reg-password', this)" aria-label="Mostrar contraseña">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="register-error" class="auth-error hidden"></div>
+          <button id="btn-register" class="btn-primary" type="submit">
+            <span>Crear cuenta</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       MAIN APP
+  ══════════════════════════════ -->
+  <div id="app" class="app hidden">
+
+    <!-- TOP STATUS BAR (cosmetic) -->
+    <div class="status-bar-spacer"></div>
+
+    <!-- ─── PAGE: DASHBOARD ─── -->
+    <section id="page-dashboard" class="page active">
+      <div class="page-scroll">
+
+        <!-- Header -->
+        <header class="page-header">
+          <div class="header-greeting">
+            <p class="greeting-sub" id="dash-greeting">Buenos días</p>
+            <h2 class="greeting-name" id="dash-name">Usuario</h2>
+          </div>
+          <button class="avatar-btn glass" id="dash-avatar" onclick="UI.navigate('profile')" aria-label="Perfil">
+            <span id="dash-avatar-letter">U</span>
+          </button>
+        </header>
+
+        <!-- Balance Hero Card -->
+        <div class="balance-card glass-deep">
+          <div class="balance-card-bg"></div>
+          <p class="balance-label">Balance total</p>
+          <h2 class="balance-amount" id="dash-balance">$0.00</h2>
+          <p class="balance-period" id="dash-period">Abril 2026</p>
+          <div class="balance-sparkle">
+            <canvas id="donut-chart" width="120" height="120"></canvas>
+            <div class="donut-center">
+              <span class="donut-pct" id="donut-pct">—</span>
+              <span class="donut-label-sm">ahorrado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Income / Expense Summary -->
+        <div class="summary-row">
+          <div class="summary-card glass income-card">
+            <div class="summary-icon income-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </div>
+            <div>
+              <p class="summary-label">Ingresos</p>
+              <p class="summary-amount income-amount" id="dash-income">$0.00</p>
+            </div>
+          </div>
+          <div class="summary-card glass expense-card">
+            <div class="summary-icon expense-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </div>
+            <div>
+              <p class="summary-label">Gastos</p>
+              <p class="summary-amount expense-amount" id="dash-expense">$0.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="section-header">
+          <h3 class="section-title">Recientes</h3>
+          <button class="section-link" onclick="UI.navigate('transactions')">Ver todos</button>
+        </div>
+        <div id="dash-recent" class="transactions-list">
+          <div class="empty-state glass">
+            <span class="empty-icon">💸</span>
+            <p>Aún no hay transacciones</p>
+            <small>Toca + para agregar tu primera</small>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: TRANSACTIONS ─── -->
+    <section id="page-transactions" class="page">
+      <div class="page-scroll">
+
+        <header class="page-header">
+          <h2 class="page-title">Transacciones</h2>
+          <div class="header-actions">
+            <button class="icon-btn glass" id="btn-search-toggle" onclick="UI.toggleSearch()" aria-label="Buscar">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div id="search-bar" class="search-bar glass hidden">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input id="search-input" type="text" placeholder="Buscar transacciones..." oninput="UI.renderTransactions()" />
+          <button onclick="UI.clearSearch()" aria-label="Limpiar búsqueda">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+          <button class="chip active" id="filter-all" onclick="UI.setFilter('all', this)">Todos</button>
+          <button class="chip" id="filter-income" onclick="UI.setFilter('income', this)">Ingresos</button>
+          <button class="chip" id="filter-expense" onclick="UI.setFilter('expense', this)">Gastos</button>
+        </div>
+
+        <!-- Month Selector -->
+        <div class="month-selector glass">
+          <button class="month-arrow" onclick="UI.changeMonth(-1)" aria-label="Mes anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <span class="month-label" id="month-label">Abril 2026</span>
+          <button class="month-arrow" onclick="UI.changeMonth(1)" aria-label="Mes siguiente">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <!-- Transactions List -->
+        <div id="tx-list" class="transactions-list"></div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: STATISTICS ─── -->
+    <section id="page-stats" class="page">
+      <div class="page-scroll">
+
+        <header class="page-header">
+          <h2 class="page-title">Estadísticas</h2>
+        </header>
+
+        <!-- Monthly bar chart -->
+        <div class="chart-card glass">
+          <div class="chart-header">
+            <p class="chart-title">Últimos 6 meses</p>
+            <div class="chart-legend">
+              <span class="legend-dot income-dot"></span><span>Ingreso</span>
+              <span class="legend-dot expense-dot"></span><span>Gasto</span>
+            </div>
+          </div>
+          <canvas id="bar-chart" height="180"></canvas>
+        </div>
+
+        <!-- Category breakdown -->
+        <h3 class="section-title" style="margin: 20px 0 12px;">Gastos por categoría</h3>
+        <div id="category-breakdown" class="category-list"></div>
+
+        <!-- Insights -->
+        <div id="stats-insights" class="insights-grid"></div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: PROFILE ─── -->
+    <section id="page-profile" class="page">
+      <div class="page-scroll">
+
+        <header class="page-header">
+          <h2 class="page-title">Perfil</h2>
+        </header>
+
+        <!-- User Card -->
+        <div class="profile-card glass-deep">
+          <div class="profile-avatar" id="profile-avatar-display">U</div>
+          <div class="profile-info">
+            <h3 id="profile-display-name">—</h3>
+            <p id="profile-username-display">@—</p>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings-group">
+          <h4 class="settings-group-title">Preferencias</h4>
+          <div class="settings-item glass" onclick="UI.openCurrencyModal()">
+            <div class="settings-icon">💱</div>
+            <div class="settings-text">
+              <span class="settings-label">Moneda</span>
+              <span class="settings-value" id="profile-currency">USD</span>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h4 class="settings-group-title">Datos</h4>
+          <div class="settings-item glass" onclick="UI.exportCSV()">
+            <div class="settings-icon">📤</div>
+            <div class="settings-text">
+              <span class="settings-label">Exportar CSV</span>
+              <span class="settings-value">Descargar</span>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="settings-item glass" onclick="UI.showDeleteConfirm()">
+            <div class="settings-icon">🗑️</div>
+            <div class="settings-text">
+              <span class="settings-label" style="color: var(--color-expense);">Eliminar cuenta</span>
+              <span class="settings-value">Permanente</span>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- App Info -->
+        <div class="app-info">
+          <div class="app-info-logo">
+            <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+              <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" fill="rgba(139,92,246,0.4)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+              <path d="M18 10v16" stroke="rgba(139,92,246,0.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span>FinFlow v1.0</span>
+        </div>
+
+        <button class="btn-logout glass" onclick="Auth.logout()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Cerrar sesión
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ─── BOTTOM NAVIGATION ─── -->
+    <nav id="bottom-nav" class="bottom-nav glass-nav" role="navigation" aria-label="Navegación principal">
+      <button class="nav-item active" id="nav-dashboard" onclick="UI.navigate('dashboard')" aria-label="Inicio">
+        <span class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        <span class="nav-label">Inicio</span>
+      </button>
+      <button class="nav-item" id="nav-transactions" onclick="UI.navigate('transactions')" aria-label="Transacciones">
+        <span class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        </span>
+        <span class="nav-label">Historial</span>
+      </button>
+      <button class="nav-item nav-add" id="nav-add" onclick="UI.openModal()" aria-label="Nueva transacción">
+        <span class="nav-add-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </span>
+      </button>
+      <button class="nav-item" id="nav-stats" onclick="UI.navigate('stats')" aria-label="Estadísticas">
+        <span class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+        <span class="nav-label">Stats</span>
+      </button>
+      <button class="nav-item" id="nav-profile" onclick="UI.navigate('profile')" aria-label="Perfil">
+        <span class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="nav-label">Perfil</span>
+      </button>
+    </nav>
+
+  </div><!-- /#app -->
+
+  <!-- ══════════════════════════════
+       MODAL: NUEVA TRANSACCIÓN
+  ══════════════════════════════ -->
+  <div id="modal-backdrop" class="modal-backdrop hidden" onclick="UI.closeModal()"></div>
+  <div id="modal-transaction" class="modal glass-deep hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <div class="modal-handle"></div>
+    <h3 class="modal-title" id="modal-title">Nueva transacción</h3>
+
+    <!-- Type Toggle -->
+    <div class="type-toggle">
+      <button class="type-btn income-toggle active" id="type-income" onclick="UI.setType('income')" aria-pressed="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Ingreso
+      </button>
+      <button class="type-btn expense-toggle" id="type-expense" onclick="UI.setType('expense')" aria-pressed="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Gasto
+      </button>
+    </div>
+
+    <!-- Amount Input -->
+    <div class="amount-input-wrapper">
+      <span class="amount-currency-symbol" id="modal-currency-symbol">$</span>
+      <input id="tx-amount" class="amount-input" type="number" inputmode="decimal" placeholder="0.00" min="0.01" step="0.01" required />
+    </div>
+
+    <!-- Description -->
+    <div class="field-group">
+      <label class="field-label" for="tx-desc">Descripción</label>
+      <div class="field-wrapper">
+        <input id="tx-desc" class="field-input" type="text" placeholder="¿En qué?" maxlength="80" required />
+      </div>
+    </div>
+
+    <!-- Category Grid -->
+    <div class="field-group">
+      <label class="field-label">Categoría</label>
+      <div class="category-grid" id="category-grid" role="group" aria-label="Selecciona categoría"></div>
+    </div>
+
+    <!-- Date -->
+    <div class="field-group">
+      <label class="field-label" for="tx-date">Fecha</label>
+      <div class="field-wrapper">
+        <input id="tx-date" class="field-input" type="date" required />
+      </div>
+    </div>
+
+    <!-- Hidden: editing id -->
+    <input type="hidden" id="tx-edit-id" />
+
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="UI.closeModal()">Cancelar</button>
+      <button class="btn-primary" id="btn-save-tx" onclick="Data.saveTransaction()">
+        <span id="btn-save-label">Guardar</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       MODAL: MONEDA
+  ══════════════════════════════ -->
+  <div id="modal-currency" class="modal modal-sm glass-deep hidden" role="dialog" aria-modal="true" aria-labelledby="currency-modal-title">
+    <div class="modal-handle"></div>
+    <h3 class="modal-title" id="currency-modal-title">Cambiar moneda</h3>
+    <div class="currency-options" id="currency-options" role="listbox" aria-label="Opciones de moneda"></div>
+    <button class="btn-ghost" onclick="UI.closeCurrencyModal()" style="margin-top:12px;width:100%">Cerrar</button>
+  </div>
+
+  <!-- ══════════════════════════════
+       MODAL: DELETE CONFIRM
+  ══════════════════════════════ -->
+  <div id="modal-delete" class="modal modal-sm glass-deep hidden" role="dialog" aria-modal="true">
+    <div class="modal-handle"></div>
+    <div class="delete-icon">⚠️</div>
+    <h3 class="modal-title" style="text-align:center">Eliminar cuenta</h3>
+    <p style="text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:20px">Esta acción es permanente. Todos tus datos serán eliminados.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="UI.closeDeleteModal()">Cancelar</button>
+      <button class="btn-danger" onclick="Auth.deleteAccount()">Eliminar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TOAST
+  ══════════════════════════════ -->
+  <div id="toast" class="toast glass hidden" role="alert" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
