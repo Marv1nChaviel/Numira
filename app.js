@@ -125,7 +125,7 @@ const Auth = {
       this.saveUsers(users);
       Store.set('finflow_session', { username });
       UI.showApp();
-      UI.toast('¡Bienvenido a FinFlow! 🎉', 'success');
+      UI.toast('¡Bienvenido a Numira! 🎉', 'success');
     } catch (e) {
       UI.showFieldError(errEl, 'Error al crear cuenta. Intenta de nuevo.');
     } finally {
