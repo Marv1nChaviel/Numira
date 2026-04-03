@@ -210,6 +210,87 @@ const Goals = {
   }
 };
 
+// ── BIOMETRICS / APP LOCK ─────────────────────────────
+const Biometrics = {
+  _keyEnabled: 'numira_bio_enabled',
+  _keyCredId: 'numira_bio_credid',
+  
+  isEnabled() { return localStorage.getItem(this._keyEnabled) === 'true'; },
+  isSupported() { return window.PublicKeyCredential !== undefined; },
+  
+  async toggle() {
+    if (!this.isSupported()) { UI.showToast('Tu dispositivo no soporta biometría', 'error'); return; }
+    if (this.isEnabled()) {
+      localStorage.setItem(this._keyEnabled, 'false');
+      this._updateUI();
+      UI.showToast('Bloqueo biométrico desactivado');
+      return;
+    }
+    
+    try {
+      const challenge = window.crypto.getRandomValues(new Uint8Array(32));
+      const authUser = await Auth.getUser();
+      const userId = new Uint8Array(16); window.crypto.getRandomValues(userId);
+      
+      const cred = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: { name: "Numira" },
+          user: { id: userId, name: authUser ? authUser.email : "user", displayName: "Usuario Numira" },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+          timeout: 60000
+        }
+      });
+      if (cred) {
+        const idArray = Array.from(new Uint8Array(cred.rawId));
+        localStorage.setItem(this._keyCredId, JSON.stringify(idArray));
+        localStorage.setItem(this._keyEnabled, 'true');
+        this._updateUI();
+        UI.showToast('¡Seguridad activada exitosamente!', 'success');
+      }
+    } catch (e) {
+      console.error(e);
+      if (e.name === 'NotAllowedError') UI.showToast('Cancelado o sin permisos', 'error');
+      else UI.showToast('No se pudo configurar la huella', 'error');
+    }
+  },
+  
+  async unlock() {
+    try {
+      const stored = localStorage.getItem(this._keyCredId);
+      if (!stored) { this._pass(); return; }
+      
+      const credId = new Uint8Array(JSON.parse(stored));
+      const challenge = window.crypto.getRandomValues(new Uint8Array(32));
+      
+      await navigator.credentials.get({
+        publicKey: {
+          challenge,
+          allowCredentials: [{ type: 'public-key', id: credId }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+      
+      this._pass();
+    } catch (e) {
+      console.error(e);
+      UI.showToast('Verificación fallida. Vuelve a intentar.', 'error');
+    }
+  },
+
+  _pass() {
+      document.getElementById('app-lock-screen').classList.add('hidden');
+  },
+  
+  _updateUI() {
+    const tog = document.getElementById('bio-toggle'), lbl = document.getElementById('bio-label');
+    if (tog) tog.setAttribute('aria-pressed', this.isEnabled() ? 'true' : 'false');
+    if (lbl) lbl.textContent = this.isEnabled() ? 'Activado' : 'Desactivado';
+  }
+};
+
 // ── UI ────────────────────────────────────────────────
 const UI = {
   currentPage:'dashboard', currentFilter:'all',
@@ -229,6 +310,13 @@ const UI = {
   async showApp() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
+    
+    // Si la biometría está activa, mostramos el muro y auto-lanzamos el unlock
+    if (Biometrics.isEnabled()) {
+      document.getElementById('app-lock-screen').classList.remove('hidden');
+      setTimeout(() => Biometrics.unlock(), 500); // 500ms delay para asegurar render
+    }
+    
     await this._applyTheme();
     this.buildCategoryGrid();
     await this.navigate('dashboard');
@@ -542,6 +630,7 @@ const UI = {
     document.getElementById('profile-currency').textContent=cur?`${cur.flag} ${cur.code}`:'USD';
     document.getElementById('dash-avatar-letter').textContent=name[0].toUpperCase();
     this._applyTheme();
+    Biometrics._updateUI();
   },
 
   // ── Modals: Transaction ────────────────────────────
